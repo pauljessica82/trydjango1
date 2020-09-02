@@ -6,6 +6,18 @@ from django.views import View
 
 # Create your views here.
 
+class ProductObjectMixin(object):
+    model = product
+
+    def get_object(self):
+        id = self.kwargs.get('id')
+        obj = None
+
+        if id is not None:
+            obj = get_object_or_404(product, id=id)
+            return obj
+
+
 class ProductCreateView(View):
     template_name = 'products/product_create.html'
 
@@ -25,14 +37,14 @@ class ProductCreateView(View):
         return render(request, self.template_name, context)
 
 
-class ProductDetailView(View):
+class ProductDetailView(ProductObjectMixin, View):
     template_name = 'products/product_detail.html'
 
     def get(self, request, id=None, *args, **kwargs):
-        context = {}
-        if id is not None:
-            obj = get_object_or_404(product, id=id)
-            context['object'] = obj
+        context = {'object': self.get_object()}
+        # if id is not None:
+        #     obj = get_object_or_404(product, id=id)
+        #     context['object'] = obj
 
         return render(request, self.template_name, context)
 
@@ -41,13 +53,7 @@ class ProductUpdateView(View):
     template_name = 'products/product_update.html'
     queryset = product.objects.all()
 
-    def get_object(self):
-        id_ = self.kwargs.get('id')
-        obj = None
 
-        if id is not None:
-            obj = get_object_or_404(product, id=id_)
-            return obj
 
     def get(self, request, id=None, *args, **kwargs):
         obj = self.get_object()
