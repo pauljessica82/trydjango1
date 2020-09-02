@@ -8,8 +8,9 @@ from .forms import CourseModelForm
 
 
 # BASE VIEW = View
-class CourseDeleteView(View):
-    template_name = "courses/course_delete.html"
+
+class CourseObjectMixin(object):
+    model = Course
 
     def get_object(self):
         id = self.kwargs.get('id')
@@ -19,12 +20,16 @@ class CourseDeleteView(View):
             obj = get_object_or_404(Course, id=id)
         return obj
 
+
+class CourseDeleteView(CourseObjectMixin, View):
+    template_name = "courses/course_delete.html"
+
     def get(self, request, id=None, *args, **kwargs):
 
         context = {}
         obj = self.get_object()
-        if obj is not None:
-            context['object'] = obj
+        # if obj is not None:
+        #     context['object'] = obj
 
         return render(request, self.template_name, context)
 
@@ -38,7 +43,7 @@ class CourseDeleteView(View):
         return render(request, self.template_name, context)  # issue after clicking yes, 405 error returned
 
 
-class CourseUpdateView(View):
+class CourseUpdateView(CourseObjectMixin, View):
     template_name = "courses/course_update.html"
     queryset = Course.objects.all()
 
@@ -108,15 +113,15 @@ class CourseListView(View):
         return render(request, self.template_name, context)
 
 
-class CourseDetailView(View):  # class is a blueprint of an object
+class CourseDetailView(CourseObjectMixin, View):  # class is a blueprint of an object
     template_name = 'courses/course_detail.html'
 
     def get(self, request, id=None, *args, **kwargs):
-        context = {}
+        context = {'object': self.get_object()}
 
-        if id is not None:
-            obj = get_object_or_404(Course, id=id)
-            context['object'] = obj
+        # if id is not None:
+        # obj = get_object_or_404(Course, id=id)
+        # context['object'] = self.get_object()
 
         return render(request, self.template_name, context)
 
