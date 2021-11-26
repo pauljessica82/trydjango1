@@ -1,21 +1,15 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
+from trydjango.utils.view import ModelBaseView
 from .models import product
-from .forms import ProductForm, RawProductForm
+from .forms import ProductForm
 from django.views import View
+# from django.conf import settings as (change name here)
 
 
 # Create your views here.
 
-class ProductObjectMixin(object):
+class ProductBaseView(ModelBaseView):
     model = product
-
-    def get_object(self):
-        id = self.kwargs.get('id')
-        obj = None
-
-        if id is not None:
-            obj = get_object_or_404(product, id=id)
-            return obj
 
 
 class ProductCreateView(View):
@@ -37,7 +31,7 @@ class ProductCreateView(View):
         return render(request, self.template_name, context)
 
 
-class ProductDetailView(ProductObjectMixin, View):
+class ProductDetailView(ProductBaseView):
     template_name = 'products/product_detail.html'
 
     def get(self, request, id=None, *args, **kwargs):
@@ -52,8 +46,6 @@ class ProductDetailView(ProductObjectMixin, View):
 class ProductUpdateView(View):
     template_name = 'products/product_update.html'
     queryset = product.objects.all()
-
-
 
     def get(self, request, id=None, *args, **kwargs):
         obj = self.get_object()
@@ -82,17 +74,9 @@ class ProductUpdateView(View):
         return render(request, self.template_name, context)
 
 
-class ProductDeleteView(View):
+class ProductDeleteView(ProductBaseView):
     template_name = 'products/product_delete.html'
     queryset = product.objects.all()
-
-    def get_object(self):
-        id = self.kwargs.get('id')
-        obj = None
-
-        if id is not None:
-            obj = get_object_or_404(product, id=id)
-        return obj
 
     def get(self, request, id=None, *args, **kwargs):
         context = {}

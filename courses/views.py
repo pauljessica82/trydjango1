@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.views import View
+from trydjango.utils.view import ModelBaseView
 from .models import Course
 from .forms import CourseModelForm
 
@@ -9,19 +10,11 @@ from .forms import CourseModelForm
 
 # BASE VIEW = View
 
-class CourseObjectMixin(object):
+class CourseBaseView(ModelBaseView):
     model = Course
 
-    def get_object(self):
-        id = self.kwargs.get('id')
-        obj = None
 
-        if id is not None:
-            obj = get_object_or_404(Course, id=id)
-        return obj
-
-
-class CourseDeleteView(CourseObjectMixin, View):
+class CourseDeleteView(CourseBaseView):
     template_name = "courses/course_delete.html"
 
     def get(self, request, id=None, *args, **kwargs):
@@ -43,17 +36,9 @@ class CourseDeleteView(CourseObjectMixin, View):
         return render(request, self.template_name, context)  # issue after clicking yes, 405 error returned
 
 
-class CourseUpdateView(CourseObjectMixin, View):
+class CourseUpdateView(CourseBaseView):
     template_name = "courses/course_update.html"
     queryset = Course.objects.all()
-
-    def get_object(self):
-        id_ = self.kwargs.get('id')
-        obj = None
-
-        if id is not None:
-            obj = get_object_or_404(Course, id=id_)
-        return obj
 
     def get(self, request, id=None, *args, **kwargs):
         # Get Method
@@ -113,7 +98,7 @@ class CourseListView(View):
         return render(request, self.template_name, context)
 
 
-class CourseDetailView(CourseObjectMixin, View):  # class is a blueprint of an object
+class CourseDetailView(CourseBaseView):  # class is a blueprint of an object
     template_name = 'courses/course_detail.html'
 
     def get(self, request, id=None, *args, **kwargs):
