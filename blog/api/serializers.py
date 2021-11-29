@@ -1,49 +1,41 @@
-from rest_framework.serializers import ModelSerializer
-
+from rest_framework.serializers import (
+    ModelSerializer,
+    HyperlinkedIdentityField,
+    SerializerMethodField,
+    HyperlinkedModelSerializer,
+    CharField
+)
 from blog.models import Article
 
 
-class PostCreateSerializer(ModelSerializer):
+# class PostCreateSerializer(ModelSerializer):
+#     class Meta:
+#         model = Article
+#         fields = [
+#             # "user",
+#             "title",
+#             "content",
+#             "active"
+#         ]
+
+
+class PostSerializer(HyperlinkedModelSerializer):
+    image = SerializerMethodField()
+    user = CharField(source='user.username', read_only=True)
+    url = HyperlinkedIdentityField(view_name="post-detail")
+
     class Meta:
         model = Article
-        fields = [
-            # "user",
-            "title",
-            "content",
-            "active"
-        ]
+        fields = ['id',
+                  'url',
+                  'user',
+                  'content',
+                  'image',
+                  'active']
 
-
-class PostListSerializer(ModelSerializer):
-    class Meta:
-        model = Article
-        fields = [
-            "user",
-            "title",
-            "content",
-            "active"
-        ]
-
-
-class PostDetailSerializer(ModelSerializer):
-    class Meta:
-        model = Article
-        fields = [
-            "title",
-            "content",
-            "active"
-        ]
-
-"""
-
-from blog.models import Article
-from blog.api.serializers import PostDetailSerializer
-
-data =  {
-'title': 'Yeahh buddy', 
-'content': 'New content', 
-'active': True 
-}
-
-
-"""
+    def get_image(self, obj):
+        try:
+            image = obj.image.url
+        except:
+            image = None
+        return image

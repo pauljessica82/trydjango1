@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'pages',
     'products', 
     'blog',
-    'courses'
+    'courses',
+    'rest_framework'
 
 ]
 
