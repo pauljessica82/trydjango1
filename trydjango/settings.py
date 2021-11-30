@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = 'y#_qr5xh%#_i-$fl&)vk%+ndcb+f(#ywl=#kob649h4pss)xy)'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -40,12 +38,13 @@ INSTALLED_APPS = [
 
     # third party apps and my own apps as well
 
-    #My apps
+    # My apps
     'pages',
-    'products', 
+    'products',
     'blog',
     'courses',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework_yaml',
 
 ]
 
@@ -59,7 +58,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'trydjango.urls' 
+ROOT_URLCONF = 'trydjango.urls'
 
 TEMPLATES = [
     {
@@ -79,7 +78,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'trydjango.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -89,7 +87,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -109,6 +106,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework_yaml.parsers.YAMLParser',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework_yaml.renderers.YAMLRenderer',
+    ],
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -122,7 +127,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/

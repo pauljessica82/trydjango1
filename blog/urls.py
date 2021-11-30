@@ -10,7 +10,7 @@ from blog.views import (
 
 )
 
-app_name = 'articles'
+app_name = 'blog'
 urlpatterns = [
 
     path('', ArticleListView.as_view(), name='article-list'),
